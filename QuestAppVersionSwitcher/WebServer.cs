@@ -325,7 +325,13 @@ namespace QuestAppVersionSwitcher
             });
             server.AddRoute("GET", "/api/mods/cover", request =>
             {
-                request.SendData(QAVSModManager.GetModCover(request.queryString.Get("id")), "image/xyz");
+                var modCover = QAVSModManager.GetModCover(request.queryString.Get("id"));
+                if (modCover != null && modCover.Length > 0)
+                {
+                    request.SendData(modCover, "image/xyz");
+                    return true;
+                }
+                request.Send404();
                 return true;
             });
             server.AddRoute("POST", "/api/mods/uninstall", request =>
